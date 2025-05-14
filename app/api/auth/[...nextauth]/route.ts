@@ -34,7 +34,6 @@ const handler = NextAuth({
                     id: user._id.toString(),
                     name: user.name,
                     email: user.email,
-                    image: user.image
                 };
             }
         })
@@ -71,3 +70,4 @@ const handler = NextAuth({
 });
 
 export { handler as GET, handler as POST };
+

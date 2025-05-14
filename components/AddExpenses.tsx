@@ -13,7 +13,7 @@ interface AddExpensesProps{
 }
 
 interface Transaction {
-  _id: number;
+  _id: string;
   type: string;
   category: string;
   amount: number;
