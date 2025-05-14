@@ -1,5 +1,5 @@
 "use client"
-import React,{ useState,useEffect } from 'react';
+import React,{ useState,useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus,faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import AddExpenses from '@/components/AddExpenses';
@@ -54,7 +54,7 @@ const Expenses = () => {
     setShowAddExpensesModal(true);
   };
 
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
     setLoading(true)
     try {
       const res = await axios.get(`/api/expense?userId=${session?.user?.id}`);
@@ -69,13 +69,13 @@ const Expenses = () => {
     finally{
       setLoading(false)
     }
-  };
+  },[session?.user.id])
     useEffect(() => {
   if (session?.user?.id) {
     console.log("Session loaded, fetching Expense data...");
     fetchExpenses();
   }
-}, [session]);
+}, [session,fetchExpenses]);
 
   if (loading) {
     return (

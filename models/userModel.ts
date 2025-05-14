@@ -1,12 +1,13 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface IUser extends Document{
+  _id: string;
   name: string;
   email: string;
   password: string;
-  provider?: string
+  provider: string;
+  _v?: number;
 }
-
 const UserSchema:Schema<IUser>=new mongoose.Schema(
   {
     name:{

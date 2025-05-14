@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoneyBill, faArrowDown, faArrowUp, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import Chart1 from '@/components/charts/Chart1';
@@ -52,7 +52,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
 
 
-  const fetchDasboardData=async()=>{
+  const fetchDasboardData=useCallback(async()=>{
     setLoading(true)
     try {
       const response = await axios.get(`/api/transactions?userId=${session?.user.id}`); // The endpoint for your dashboard data
@@ -70,7 +70,7 @@ export default function Page() {
     }finally {
       setLoading(false); // Stop loading when the request is finished
     }
-  }
+  },[session?.user.id])
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -79,7 +79,7 @@ export default function Page() {
     } else {
       console.log("Session not loaded yet...");
     }
-  }, [session]);
+  }, [session,fetchDasboardData]);
 
   if (loading) {
     return (

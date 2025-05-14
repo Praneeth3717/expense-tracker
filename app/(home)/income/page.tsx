@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import AddIncome from '@/components/AddIncome';
@@ -54,7 +54,7 @@ const Income = () => {
     setShowAddIncomeModal(true);
   };
 
-  const fetchIncomeDashboard = async () => {
+  const fetchIncomeDashboard = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axios.get(`/api/income?userId=${session?.user?.id}`);
@@ -69,12 +69,13 @@ const Income = () => {
     finally {
       setLoading(false);
     }
-  };
+  },[session?.user.id])
+
   useEffect(() => {
     if (session?.user?.id) {
       fetchIncomeDashboard();
     }
-  }, [session]);
+  }, [session,fetchIncomeDashboard]);
 
   if (loading) {
     return (
@@ -189,7 +190,7 @@ const Income = () => {
               ReloadData={fetchIncomeDashboard} 
               editData={editData} 
               setEditData={setEditData} 
-              User_Id={session?.user.id}
+              User_Id={session?.user?.id}
             />
           </div>
         </div>

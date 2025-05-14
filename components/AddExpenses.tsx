@@ -9,7 +9,7 @@ interface AddExpensesProps{
   ReloadData:()=>void
   editData: Transaction | null
   setEditData: (data: Transaction | null) => void
-  User_Id: string;
+  User_Id: string|undefined;
 }
 
 interface Transaction {
