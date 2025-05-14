@@ -36,7 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut();
+    await signOut({ redirect: false });
+    router.push('/')
   };
 
   return (
