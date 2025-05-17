@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const Spinner = () => (
   <div className="flex items-center justify-center">
-    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-red-800"></div>
+    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-red-800"></div>
   </div>
 );
 
@@ -92,22 +92,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full grid grid-cols-1 md:grid-cols-5 bg-white">
-      {/* Left side (form) - Takes full width on mobile, 3/5 on larger screens */}
-      <div className="col-span-1 md:col-span-3 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-gray-50">
+      <div className="col-span-1 md:col-span-3 flex items-center justify-center p-4 sm:p-5 md:p-8 bg-gray-50">
         <div className="w-full max-w-md px-4 sm:px-0">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 mb-2 sm:mb-3">
-            Expense Tracker
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">
+            TrackMyCash
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-1 italic">
+          <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-1 italic">
             &quot;Beware of little expenses; a small leak will sink a great ship.&quot;
           </p>
-          <p className="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">– Benjamin Franklin</p>
+          <p className="text-gray-500 text-xs mb-4 sm:mb-6">– Benjamin Franklin</p>
 
-          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">
+          <h2 className="text-base sm:text-lg md:text-xl font-medium mb-2 sm:mb-3">
             {isSignIn ? "Welcome Back, Friend...!" : "Sign Up and Go!"}
           </h2>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:gap-3">
             {!isSignIn && (
               <input
                 type="text"
@@ -115,7 +114,7 @@ export default function Home() {
                 placeholder="Full Name"
                 value={user.name}
                 onChange={handleChange}
-                className="p-2 sm:p-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+                className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
                 required
               />
             )}
@@ -126,7 +125,7 @@ export default function Home() {
               placeholder="Email"
               value={user.email}
               onChange={handleChange}
-              className="p-2 sm:p-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+              className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
               required
             />
             <input
@@ -135,7 +134,7 @@ export default function Home() {
               placeholder="Password"
               value={user.password}
               onChange={handleChange}
-              className="p-2 sm:p-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+              className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
               required
             />
             {!isSignIn && (
@@ -145,22 +144,22 @@ export default function Home() {
                 placeholder="Confirm Password"
                 value={user.confirmPassword}
                 onChange={handleChange}
-                className="p-2 sm:p-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+                className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
                 required
               />
             )}
 
-            {error && <p className="text-red-500 text-sm mt-1 sm:mt-2">{error}</p>}
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
 
             <button
               type="submit"
-              className="bg-red-900 hover:bg-red-950 text-white p-2 sm:p-3 rounded-md font-semibold shadow-md transition duration-300"
+              className="bg-red-900 hover:bg-red-950 text-white p-2 rounded-md font-medium shadow-md transition duration-300 text-sm"
             >
               {isLoading ? <Spinner /> : isSignIn ? "Sign In" : "Sign Up"}
             </button>
           </form>
 
-          <p className="mt-4 sm:mt-5 text-xs sm:text-sm text-gray-600 text-center">
+          <p className="mt-3 sm:mt-4 text-xs text-gray-600 text-center">
             {isSignIn ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
               onClick={toggleForm}
@@ -172,7 +171,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Right side (image) - Hidden on mobile, 2/5 on larger screens */}
       <div className="col-span-2 relative hidden md:block">
         <Image
           className="object-cover"

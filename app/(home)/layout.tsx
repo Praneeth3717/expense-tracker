@@ -38,8 +38,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <Navbar toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
       <main
-        className={`transition-all duration-300 ease-in-out mt-16 min-h-screen bg-gray-100 p-4 sm:p-5 ${
-          isSidebarOpen ? 'lg:ml-64 xl:ml-64' : ''
+        className={`transition-all duration-300 ease-in-out mt-12 min-h-screen bg-gray-100 p-4 sm:p-5 ${
+          isSidebarOpen ? 'lg:ml-56 xl:ml-56 ' : ''
         }`}
       >
         {children}

@@ -20,14 +20,14 @@ const formatDate = (date:Date) => {
 
   if (ExpenseData.length === 0) {
     return (
-      <div className="w-full h-72 flex items-center justify-center text-gray-500">
+      <div className="w-full h-60 flex items-center justify-center text-gray-500">
         Add expense data to view Charts.
       </div>
     );
   }
 
   return (
-    <div className='w-full h-72'>
+    <div className='w-full h-60'>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={ExpenseData}>
           <defs>

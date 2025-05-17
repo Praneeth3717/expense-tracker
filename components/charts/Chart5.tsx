@@ -28,14 +28,14 @@ const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
 
   if (IncomeData.length === 0) {
     return (
-      <div className="w-full h-72 flex items-center justify-center text-gray-500">
+      <div className="w-full h-60 flex items-center justify-center text-gray-500">
         Add Income data to view Charts.
       </div>
     );
   }
 
   return (
-    <div className='w-full h-72'>
+    <div className='w-full h-60'>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={IncomeData}>
           <XAxis dataKey="date" tickFormatter={formatDate} />
