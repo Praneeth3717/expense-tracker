@@ -2,7 +2,21 @@
 
 A modern, full-stack expense tracking application built with Next.js, MongoDB, and TypeScript. TrackMyCash helps you manage your personal finances by tracking income and expenses with intuitive visualizations and real-time updates.
 
-![TrackMyCash Dashboard](/screenshots/expenses.webp)
+## 📸 Screenshots  
+
+<p align="center">
+  <img src="public/screenshots/Screenshot (1126).png" alt="Home Page" width="48%">
+  <img src="public/screenshots/Screenshot (1127).png" alt="Diary Entry Page" width="48%">
+</p>
+
+<p align="center">
+  <img src="public/screenshots/Screenshot (1128).png" alt="Authentication Page" width="48%">
+  <img src="public/screenshots/Screenshot (1129).png" alt="Dashboard Page" width="48%">
+</p>
+<p align="center">
+  <img src="public/screenshots/Screenshot (1130).png" alt="Home Page" width="48%">
+  <img src="public/screenshots/Screenshot (1131).png" alt="Diary Entry Page" width="48%">
+</p>
 
 ## Features
 
@@ -92,7 +106,7 @@ npm install
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [https://expense-tracker-gamma-flame.vercel.app/](https://expense-tracker-gamma-flame.vercel.app/) in your browser
 
 ### Build for Production
 
@@ -134,15 +148,3 @@ npm start
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Next.js team for the amazing framework
-- Recharts for beautiful charts
-- TailwindCSS for the utility-first CSS framework
-- MongoDB team for the robust database
-- FontAwesome for the icons
