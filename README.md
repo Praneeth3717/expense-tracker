@@ -2,7 +2,7 @@
 
 A modern, full-stack expense tracking application built with Next.js, MongoDB, and TypeScript. TrackMyCash helps you manage your personal finances by tracking income and expenses with intuitive visualizations and real-time updates.
 
-![TrackMyCash Dashboard](/public/expenses.webp)
+![TrackMyCash Dashboard](/screenshots/expenses.webp)
 
 ## Features
 
@@ -112,6 +112,7 @@ npm start
 ├── components/           # React components
 ├── controllers/          # Business logic
 └── public/              # Static assets
+    └── screenshots/     # Application screenshots
 ```
 
 ## API Routes

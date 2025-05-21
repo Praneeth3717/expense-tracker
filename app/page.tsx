@@ -1,4 +1,3 @@
-"use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
@@ -174,7 +173,7 @@ export default function Home() {
       <div className="col-span-2 relative hidden md:block">
         <Image
           className="object-cover"
-          src="/expenses.webp"
+          src="/screenshots/expenses.webp"
           alt="Expenses illustration"
           fill
           priority
