@@ -97,7 +97,7 @@ const AddIncome:React.FC<AddIncomeProps> = ({ onClose, ReloadData, editData, set
               value={formData.category}
               onChange={HandleChange}
               placeholder="Freelance, Salary, etc."
-              className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"
+              className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 transition text-gray-500"
               required
             />
           </div>
@@ -108,8 +108,9 @@ const AddIncome:React.FC<AddIncomeProps> = ({ onClose, ReloadData, editData, set
               name="amount"
               type="number"
               value={formData.amount}
+              placeholder='Enter Amount'
               onChange={HandleChange}
-              className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"
+              className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 transition text-gray-500"
               required
             />
           </div>
@@ -121,7 +122,7 @@ const AddIncome:React.FC<AddIncomeProps> = ({ onClose, ReloadData, editData, set
               type="date"
               value={formData.date}
               onChange={HandleChange}
-              className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"
+              className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 transition text-gray-500"
               required
             />
           </div>

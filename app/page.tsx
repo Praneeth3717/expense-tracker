@@ -1,3 +1,4 @@
+'use client'
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
@@ -101,7 +102,7 @@ export default function Home() {
           </p>
           <p className="text-gray-500 text-xs mb-4 sm:mb-6">– Benjamin Franklin</p>
 
-          <h2 className="text-base sm:text-lg md:text-xl font-medium mb-2 sm:mb-3">
+          <h2 className="text-base sm:text-lg md:text-xl font-medium mb-2 sm:mb-3 text-red-900">
             {isSignIn ? "Welcome Back, Friend...!" : "Sign Up and Go!"}
           </h2>
 
@@ -113,7 +114,7 @@ export default function Home() {
                 placeholder="Full Name"
                 value={user.name}
                 onChange={handleChange}
-                className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
+                className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm text-gray-600"
                 required
               />
             )}
@@ -124,7 +125,7 @@ export default function Home() {
               placeholder="Email"
               value={user.email}
               onChange={handleChange}
-              className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
+              className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm text-gray-600"
               required
             />
             <input
@@ -133,7 +134,7 @@ export default function Home() {
               placeholder="Password"
               value={user.password}
               onChange={handleChange}
-              className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
+              className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm text-gray-600"
               required
             />
             {!isSignIn && (
@@ -143,7 +144,7 @@ export default function Home() {
                 placeholder="Confirm Password"
                 value={user.confirmPassword}
                 onChange={handleChange}
-                className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm"
+                className="p-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition text-sm text-gray-600"
                 required
               />
             )}

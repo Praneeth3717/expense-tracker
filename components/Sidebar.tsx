@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
               {session?.user?.name ? session.user.name.charAt(0) : ""}
             </div>
           )}
-          <h1 className="text-base mt-2">
+          <h1 className="text-base mt-2 text-gray-900">
             {session?.user?.name?.split(" ")[0] ?? "Guest User"}
           </h1>
         </div>

@@ -98,7 +98,7 @@ const AddExpenses:React.FC<AddExpensesProps> = ({ onClose ,ReloadData,editData,s
             value={formData.category}
             onChange={HandleChange}
             placeholder="Groceries, Rent, etc."
-            className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-red-400 transition"
+            className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-red-400 transition text-gray-500"
             required
           />
         </div>
@@ -109,8 +109,9 @@ const AddExpenses:React.FC<AddExpensesProps> = ({ onClose ,ReloadData,editData,s
             name="amount"
             type="number"
             value={formData.amount}
+            placeholder='Enter Amount'
             onChange={HandleChange}
-            className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-red-400 transition"
+            className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-red-400 transition text-gray-500"
             required
           />
         </div>
@@ -122,7 +123,7 @@ const AddExpenses:React.FC<AddExpensesProps> = ({ onClose ,ReloadData,editData,s
             type="date"
             value={formData.date}
             onChange={HandleChange}
-            className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-red-400 transition"
+            className="p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-red-400 transition text-gray-500"
             required
           />
         </div>
