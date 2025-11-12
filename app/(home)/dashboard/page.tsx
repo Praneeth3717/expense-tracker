@@ -1,7 +1,8 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoneyBill, faArrowDown, faArrowUp, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { GiMoneyStack } from "react-icons/gi";
+import { BsGraphUpArrow, BsGraphDownArrow } from "react-icons/bs";
 import Chart1 from '@/components/charts/Chart1';
 import Chart2 from '@/components/charts/Chart2';
 import Chart3 from '@/components/charts/Chart3';
@@ -101,22 +102,22 @@ export default function Page() {
     <>
       {/* Top Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-        <div className="bg-white rounded-lg p-3 flex items-center gap-2 shadow-md">
-          <FontAwesomeIcon icon={faMoneyBill} className="text-2xl p-1 text-gray-600" />
+        <div className="bg-white rounded-lg p-3 flex items-center gap-5 shadow-md">
+          <GiMoneyStack className="text-5xl p-1 text-gray-600"/>
           <div>
             <div className="text-xs md:text-sm text-gray-800">Total Balance</div>
             <div className='text-lg md:text-xl text-gray-500'>₹ {dashboardData.totalBalance}</div>
           </div>
         </div>
-        <div className="bg-white rounded-lg p-3 flex items-center gap-2 shadow-md">
-          <FontAwesomeIcon icon={faArrowUp} className="text-2xl p-1 text-green-600" />
+        <div className="bg-white rounded-lg p-3 flex items-center gap-5 shadow-md">
+          <BsGraphUpArrow className="text-3xl p-1 text-green-600"/>
           <div>
             <div className="text-xs md:text-sm text-gray-800">Total Income</div>
             <div className='text-lg md:text-xl text-gray-500'>₹ {dashboardData.totalIncome}</div>
           </div>
         </div>
-        <div className="bg-white rounded-lg p-3 flex items-center gap-2 shadow-md">
-          <FontAwesomeIcon icon={faArrowDown} className="text-2xl p-1 text-red-600" />
+        <div className="bg-white rounded-lg p-3 flex items-center gap-5 shadow-md">
+          <BsGraphDownArrow className="text-3xl p-1 text-red-600"/>
           <div>
             <div className="text-xs md:text-sm text-gray-800">Total Expenses</div>
             <div className='text-lg md:text-xl text-gray-500'>₹ {dashboardData.totalExpense}</div>
@@ -184,9 +185,9 @@ export default function Page() {
         <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
          <div className="flex justify-between items-center p-3">
           <h1 className="text-lg text-gray-800">Expenses</h1>
-          <button onClick={() => router.push('./expenses')} className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800">
-           See All 
-           <FontAwesomeIcon className='px-1 text-xs' icon={faArrowRight}/>
+          <button onClick={() => router.push('./expenses')} className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800 flex items-center justify-center gap-1">
+           View All 
+           <MdOutlineKeyboardArrowRight className='text-lg'/>
           </button>
          </div>
          <ul className="space-y-4 p-3">
@@ -221,9 +222,9 @@ export default function Page() {
   <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
      <div className="flex justify-between items-center p-3">
       <h1 className="text-lg text-gray-800">Income</h1>
-      <button onClick={() => router.push('./income')} className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800">
-       See All 
-       <FontAwesomeIcon className='px-1 text-xs' icon={faArrowRight}/>
+      <button onClick={() => router.push('./income')} className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800 flex items-center justify-center gap-1">
+       View All 
+       <MdOutlineKeyboardArrowRight className="text-lg"/>
       </button>
      </div>
      <ul className="space-y-4 p-3">

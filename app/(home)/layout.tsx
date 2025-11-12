@@ -1,5 +1,5 @@
-"use client"
-import React, { useState, useEffect } from 'react';
+"use client";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 
@@ -21,9 +21,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
     handleResize();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -35,11 +35,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
       <main
         className={`transition-all duration-300 ease-in-out mt-12 min-h-screen bg-gray-100 p-4 sm:p-5 ${
-          isSidebarOpen ? 'lg:ml-56 xl:ml-56 ' : ''
+          isSidebarOpen && "lg:ml-56 xl:ml-56"
         }`}
       >
         {children}

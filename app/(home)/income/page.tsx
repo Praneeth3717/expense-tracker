@@ -1,7 +1,8 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { AiOutlineDelete } from "react-icons/ai";
+import { IoIosAdd } from "react-icons/io";
+import { FiEdit } from "react-icons/fi";
 import AddIncome from '@/components/AddIncome';
 import Chart5 from '@/components/charts/Chart5';
 import axios from 'axios';
@@ -107,9 +108,9 @@ const Income = () => {
               </div>
               <button 
                 onClick={() => setShowAddIncomeModal(true)} 
-                className="mt-2 md:mt-0 px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full md:w-auto"
+                className="mt-2 md:mt-0 px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full md:w-auto flex items-center justify-center gap-1"
               >
-                <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                <IoIosAdd className="text-xl"/>
                 Add Income
               </button>
             </div>
@@ -151,15 +152,10 @@ const Income = () => {
                       </div>
                       <div className='flex gap-1.5 md:gap-3 items-center'>
                         <div className={`flex gap-1.5 md:gap-2 ${hoveredItemId === trans._id ? 'opacity-100' : 'opacity-0'}`}>
-                          <FontAwesomeIcon
-                            onClick={() => handleEditClick(trans)}
-                            icon={faEdit}
-                            className="text-base md:text-lg text-gray-400 cursor-pointer"
-                          />
-                          <FontAwesomeIcon
+                          <FiEdit onClick={() => handleEditClick(trans)} className="text-base text-lg text-gray-400 cursor-pointer"/>
+                          <AiOutlineDelete
                             onClick={() => deleteIncome(trans._id)}
-                            icon={faTrash}
-                            className="text-base md:text-lg text-gray-400 cursor-pointer"
+                            className="text-base text-xl text-gray-400 cursor-pointer"
                           />
                         </div>
                         <div className='font-bold text-xs md:text-sm text-teal-600 min-w-[60px] md:min-w-[70px] text-right'>
