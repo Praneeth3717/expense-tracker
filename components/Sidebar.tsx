@@ -79,24 +79,25 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
             {navItems.map((item) => (
               <li
                 key={item.label}
-                className={`p-2 cursor-pointer rounded-md flex items-center gap-2 transition-colors duration-200 text-sm tracking-tight ${
+                className={`p-5 cursor-pointer rounded-md flex items-center gap-5 transition-colors duration-200 text-sm tracking-tight ${
                   pathname === item.path
                     ? "bg-blue-100 text-blue-600 font-medium"
                     : "hover:bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => {
                   router.push(item.path);
+                  closeSidebar()
                 }}
               >
-                <span className="mx-1 w-3.5">{item.icon}</span>
+                <span className="text-xl">{item.icon}</span>
                 {item.label}
               </li>
             ))}
             <li
               onClick={handleLogout}
-              className="p-2 cursor-pointer flex items-center gap-2 hover:bg-gray-200 rounded-md transition-colors duration-200 text-gray-700 mt-6 text-sm tracking-tight"
+              className="p-5 cursor-pointer flex items-center gap-5 hover:bg-gray-200 rounded-md transition-colors duration-200 text-gray-700 mt-6 text-sm tracking-tight"
             >
-              <LuLogOut className="mx-1 w-3.5" />
+              <LuLogOut className="text-xl" />
               Logout
             </li>
           </ul>

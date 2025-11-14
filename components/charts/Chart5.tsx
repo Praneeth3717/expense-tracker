@@ -1,6 +1,6 @@
-"use client"
-import React from 'react'
-import dayjs from 'dayjs'
+"use client";
+import React from "react";
+import dayjs from "dayjs";
 import {
   BarChart,
   Bar,
@@ -9,22 +9,23 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-} from "recharts"
+} from "recharts";
 
 type IncomeData = {
-  date: string|Date;
+  date: string | Date;
   amount: number;
-}
+};
 
 interface Chart5Props {
   IncomeData: IncomeData[];
 }
 
-const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
+const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 400;
 
+const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
   const formatDate = (date: Date) => {
     return dayjs(date).format("DD MMM");
-  }
+  };
 
   if (IncomeData.length === 0) {
     return (
@@ -35,12 +36,25 @@ const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
   }
 
   return (
-    <div className='w-full h-60'>
+    <div className="w-full h-60">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={IncomeData}>
-          <XAxis dataKey="date" tickFormatter={formatDate} />
-          <YAxis />
-          <Tooltip />
+          <XAxis
+            dataKey="date"
+            tickFormatter={formatDate}
+            tick={{ fontSize: isSmallScreen ? 8 : 12 }}
+          />
+
+          <YAxis
+            tick={{ fontSize: isSmallScreen ? 8 : 12 }}
+            width={isSmallScreen ? 28 : 40}
+            tickCount={isSmallScreen ? 4 : 7}
+          />
+          <Tooltip
+            labelFormatter={() => ""}
+            formatter={(value) => [`₹${value}`, "Amount"]}
+          />
+
           <Legend />
           <Bar
             name="Daily Income"
@@ -51,7 +65,7 @@ const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
         </BarChart>
       </ResponsiveContainer>
     </div>
-  )
-}
+  );
+};
 
-export default Chart5
+export default Chart5;

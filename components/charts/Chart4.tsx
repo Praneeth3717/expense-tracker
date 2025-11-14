@@ -1,22 +1,30 @@
-"use client"
-import dayjs from 'dayjs'
-import React from 'react';
-import {Area,AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+"use client";
+import dayjs from "dayjs";
+import React from "react";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-type ExpenseData={
-  date: string|Date;
+type ExpenseData = {
+  date: string | Date;
   amount: number;
-}
+};
 
 interface Chart3Props {
   ExpenseData: ExpenseData[];
 }
 
-const Chart4:React.FC<Chart3Props> = ({ExpenseData}) => {
-  
-const formatDate = (date:Date) => {
-  return dayjs(date).format("DD MMM")
-}
+const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 400;
+
+const Chart4: React.FC<Chart3Props> = ({ ExpenseData }) => {
+  const formatDate = (date: Date) => {
+    return dayjs(date).format("DD MMM");
+  };
 
   if (ExpenseData.length === 0) {
     return (
@@ -27,7 +35,7 @@ const formatDate = (date:Date) => {
   }
 
   return (
-    <div className='w-full h-60'>
+    <div className="w-full h-60">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={ExpenseData}>
           <defs>
@@ -37,9 +45,22 @@ const formatDate = (date:Date) => {
             </linearGradient>
           </defs>
 
-          <XAxis dataKey="date" tickFormatter={formatDate}/>
-          <YAxis />
-          <Tooltip />
+          <XAxis
+            dataKey="date"
+            tickFormatter={formatDate}
+            tick={{ fontSize: isSmallScreen ? 8 : 12 }}
+          />
+
+          <YAxis
+            tick={{ fontSize: isSmallScreen ? 8 : 12 }}
+            width={isSmallScreen ? 28 : 40}
+            tickCount={isSmallScreen ? 4 : 7}
+          />
+
+          <Tooltip
+            labelFormatter={() => ""}
+            formatter={(value) => [`₹${value}`, "Amount"]}
+          />
 
           <Area
             type="monotone"
@@ -52,8 +73,7 @@ const formatDate = (date:Date) => {
         </AreaChart>
       </ResponsiveContainer>
     </div>
-  )
-}
+  );
+};
 
-export default Chart4
-
+export default Chart4;

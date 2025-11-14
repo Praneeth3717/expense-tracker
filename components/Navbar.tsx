@@ -10,8 +10,8 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, isSidebarOpen }) => {
   return (
     <div className="w-full h-12 shadow-sm bg-white fixed top-0 z-40 flex items-center justify-between px-3">
-      <div className="flex items-center gap-2">
-        <div className="text-gray-700 text-lg cursor-pointer lg:hidden">
+      <div className="flex items-center gap-5">
+        <div className="text-gray-700 text-2xl cursor-pointer lg:hidden">
           {isSidebarOpen ? (
             <>
               <RiMenuFoldLine
