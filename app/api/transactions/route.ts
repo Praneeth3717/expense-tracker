@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDashboardData } from '../../../controllers/transactionController'
-import connectDB from "@/app/lib/dbConnect";
+import connectDB from "@/lib/dbConnect";
 
 export const GET=async(req:NextRequest)=>{
     try {

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import SessionWrapper from "@/components/SessionWrapper";
+import SessionWrapper from "./providers/SessionWrapper";
+import ReactQueryProvider from "./providers/ReactQueryProvider";
 
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased">
-        <SessionWrapper>{children}</SessionWrapper>
+        <SessionWrapper>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </SessionWrapper>
       </body>
     </html>
   );

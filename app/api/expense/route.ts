@@ -1,7 +1,7 @@
 import { NextResponse,NextRequest } from "next/server";
 import { getExpenses,AddExpense,deleteExpense, updateExpense } from "../../../controllers/expenseController";
 import { ITransaction } from "@/models/transactionModel";
-import connectDB from "@/app/lib/dbConnect";
+import connectDB from "@/lib/dbConnect";
 import mongoose from "mongoose";
 
 export const POST=async(req:NextRequest)=>{

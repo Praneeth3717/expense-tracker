@@ -1,4 +1,4 @@
-import connectDB from '../../lib/dbConnect'
+import connectDB from '../../../lib/dbConnect'
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcryptjs'
 import User from '../../../models/userModel'

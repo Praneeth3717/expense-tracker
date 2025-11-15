@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AddIncome,getIncome,deleteIncome,updateIncome } from "../../../controllers/incomeController";
 import { ITransaction } from "@/models/transactionModel";
-import connectDB from "@/app/lib/dbConnect";
+import connectDB from "@/lib/dbConnect";
 import mongoose from "mongoose";
 
 export const POST=async(req:NextRequest)=>{
