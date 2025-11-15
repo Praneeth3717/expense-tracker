@@ -8,22 +8,12 @@ import Chart4 from "@/components/charts/Chart4";
 import { useSession } from "next-auth/react";
 import { useExpense } from "@/hooks/useExpense";
 
-type RecentExpenseData = {
-  date: Date;
-  amount: number;
-};
-
 interface Transaction {
   _id: string;
   type: string;
   category: string;
   amount: number;
   date: string;
-}
-
-interface ExpenseDashboard {
-  ExpensesList: Transaction[];
-  ExpenseData: RecentExpenseData[];
 }
 
 const Expenses = () => {

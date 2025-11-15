@@ -8,22 +8,12 @@ import Chart5 from "@/components/charts/Chart5";
 import { useSession } from "next-auth/react";
 import { useIncome } from "@/hooks/useIncome";
 
-type RecentIncomeData = {
-  date: string;
-  amount: number;
-};
-
 interface Transaction {
   _id: string;
   type: string;
   category: string;
   amount: number;
   date: string;
-}
-
-interface IncomeDashboard {
-  IncomeList: Transaction[];
-  IncomeData: RecentIncomeData[];
 }
 
 const Income = () => {
