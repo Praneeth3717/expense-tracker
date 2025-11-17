@@ -1,9 +1,20 @@
-// import { Transaction } from "./transaction";
+import { Transaction } from "./transaction";
 
-// export interface IncomeResponse {
-//   IncomeList: Transaction[];
-//   IncomeData: {
-//     date: string;
-//     amount: number;
-//   }[];
-// }
+export interface IncomeTransaction extends Transaction {
+  type: "income";
+}
+
+export interface IncomeDashboardData {
+  IncomeList: IncomeTransaction[];
+  IncomeData: {
+    date: string;
+    amount: number;
+  }[];
+}
+
+export interface IncomePayload {
+  category: string;
+  amount: number;
+  date: string;
+  userId: string;
+}

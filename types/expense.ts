@@ -1,9 +1,20 @@
-// import { Transaction } from "./transaction";
+import { Transaction } from "./transaction";
 
-// export interface ExpenseResponse {
-//   ExpensesList: Transaction[];
-//   ExpenseData: {
-//     date: string;
-//     amount: number;
-//   }[];
-// }
+export interface ExpenseTransaction extends Transaction {
+  type: "expense";
+}
+
+export interface ExpenseDashboardData {
+  ExpenseList: ExpenseTransaction[];
+  ExpenseData: {
+    date: string;
+    amount: number;
+  }[];
+}
+
+export interface ExpensePayload {
+  category: string;
+  amount: number;
+  date: string;
+  userId: string;
+}

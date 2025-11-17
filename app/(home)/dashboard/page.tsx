@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import useDashboard from "@/hooks/useDashboard";
+import Loader from "@/components/common/Loader";
 
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { GiMoneyStack } from "react-icons/gi";
@@ -16,14 +17,14 @@ export default function Page() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const { data:dashboardData , isLoading, isError } = useDashboard(session?.user.id);
+  const {
+    data: dashboardData,
+    isLoading,
+    isError,
+  } = useDashboard(session?.user.id);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (isError || !dashboardData) {

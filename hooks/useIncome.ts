@@ -2,42 +2,33 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
+import {
+  IncomeDashboardData,
+  IncomePayload,
+  IncomeTransaction,
+} from "@/types/income";
 
-interface Transaction {
-  _id: string;
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-}
-
-interface RecentIncomeData {
-  date: string;
-  amount: number;
-}
-
-export interface IncomeResponse {
-  IncomeList: Transaction[];
-  IncomeData: RecentIncomeData[];
+interface ApiResponse {
+  success: boolean;
+  data: IncomeDashboardData;
 }
 
 export const useIncome = (userId?: string) => {
   const queryClient = useQueryClient();
 
-  // GET Income Dashboard
-  const incomeQuery = useQuery<IncomeResponse>({
+  const incomeQuery = useQuery<IncomeDashboardData>({
     queryKey: ["income-dashboard", userId],
     queryFn: async () => {
-      const res = await api.get(`/income?userId=${userId}`);
+      const res = await api.get<ApiResponse>(`/income?userId=${userId}`);
       return res.data.data;
     },
-    enabled: !!userId, // only run when userId available
+    enabled: !!userId,
   });
 
-  // ADD Income
-  const addIncome = useMutation({
-    mutationFn: async (data: any) => {
-      const res = await api.post("/income", data);
+  // ADD
+  const addIncome = useMutation<IncomeTransaction, Error, IncomePayload>({
+    mutationFn: async (payload) => {
+      const res = await api.post("/income", payload);
       return res.data;
     },
     onSuccess: () => {
@@ -46,9 +37,13 @@ export const useIncome = (userId?: string) => {
     },
   });
 
-  // UPDATE Income
-  const updateIncome = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+  // UPDATE
+  const updateIncome = useMutation<
+    IncomeTransaction,
+    Error,
+    { id: string; data: IncomePayload }
+  >({
+    mutationFn: async ({ id, data }) => {
       const res = await api.patch(`/income?id=${id}`, data);
       return res.data;
     },
@@ -58,9 +53,9 @@ export const useIncome = (userId?: string) => {
     },
   });
 
-  // DELETE Income
-  const deleteIncome = useMutation({
-    mutationFn: async (id: string) => {
+  // DELETE
+  const deleteIncome = useMutation<unknown, Error, string>({
+    mutationFn: async (id) => {
       const res = await api.delete(`/income?id=${id}`);
       return res.data;
     },

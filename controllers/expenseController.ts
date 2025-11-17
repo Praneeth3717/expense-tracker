@@ -2,7 +2,7 @@ import Transaction, { ITransaction } from "@/models/transactionModel";
 import mongoose from 'mongoose'
 
 interface ExpenseDashboard{
-    ExpensesList:ITransaction[],
+    ExpenseList:ITransaction[],
     ExpenseData:{
         date:Date,
         amount:number
@@ -28,7 +28,7 @@ export const AddExpense=async(newExpense:{
 export const getExpenses=async(userId: string):Promise<ExpenseDashboard>=>{
     try {
         const objectId = new mongoose.Types.ObjectId(userId);
-        const [ExpensesList,ExpenseData]=await Promise.all([
+        const [ExpenseList,ExpenseData]=await Promise.all([
             Transaction.find({userId:objectId,type:'expense'}).sort({date:-1}),
             Transaction.aggregate([
                 {$match:{userId:objectId,type:'expense'}},
@@ -44,7 +44,7 @@ export const getExpenses=async(userId: string):Promise<ExpenseDashboard>=>{
             ])
         ])
         return {
-            ExpensesList,
+            ExpenseList,
             ExpenseData
         }
     } catch (error) {

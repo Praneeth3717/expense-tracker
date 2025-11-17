@@ -2,42 +2,34 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
+import {
+  ExpenseDashboardData,
+  ExpenseTransaction,
+  ExpensePayload,
+} from "@/types/expense";
 
-interface Transaction {
-  _id: string;
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-}
-
-interface RecentExpenseData {
-  date: string;
-  amount: number;
-}
-
-export interface ExpenseResponse {
-  ExpensesList: Transaction[];
-  ExpenseData: RecentExpenseData[];
+interface ApiResponse {
+  success: boolean;
+  data: ExpenseDashboardData;
 }
 
 export const useExpense = (userId?: string) => {
   const queryClient = useQueryClient();
 
   // GET Expense Dashboard
-  const expenseQuery = useQuery<ExpenseResponse>({
+  const expenseQuery = useQuery<ExpenseDashboardData>({
     queryKey: ["expense-dashboard", userId],
     queryFn: async () => {
-      const res = await api.get(`/expense?userId=${userId}`);
+      const res = await api.get<ApiResponse>(`/expense?userId=${userId}`);
       return res.data.data;
     },
     enabled: !!userId,
   });
 
   // ADD Expense
-  const addExpense = useMutation({
-    mutationFn: async (data: any) => {
-      const res = await api.post("/expense", data);
+  const addExpense = useMutation<ExpenseTransaction, Error, ExpensePayload>({
+    mutationFn: async (payload) => {
+      const res = await api.post("/expense", payload);
       return res.data;
     },
     onSuccess: () => {
@@ -49,8 +41,12 @@ export const useExpense = (userId?: string) => {
   });
 
   // UPDATE Expense
-  const updateExpense = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+  const updateExpense = useMutation<
+    ExpenseTransaction,
+    Error,
+    { id: string; data: ExpensePayload }
+  >({
+    mutationFn: async ({ id, data }) => {
       const res = await api.patch(`/expense?id=${id}`, data);
       return res.data;
     },
@@ -63,8 +59,8 @@ export const useExpense = (userId?: string) => {
   });
 
   // DELETE Expense
-  const deleteExpense = useMutation({
-    mutationFn: async (id: string) => {
+  const deleteExpense = useMutation<unknown, Error, string>({
+    mutationFn: async (id) => {
       const res = await api.delete(`/expense?id=${id}`);
       return res.data;
     },

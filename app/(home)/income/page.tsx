@@ -4,17 +4,11 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { IoIosAdd } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import TransactionModal from "@/components/common/TransactionModal";
+import Loader from "@/components/common/Loader";
 import Chart5 from "@/components/charts/Chart5";
 import { useSession } from "next-auth/react";
 import { useIncome } from "@/hooks/useIncome";
-
-interface Transaction {
-  _id: string;
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-}
+import { Transaction } from "@/types/transaction";
 
 const Income = () => {
   const { data: session } = useSession();
@@ -36,11 +30,7 @@ const Income = () => {
   };
 
   if (IncomeDashboardData.isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-3 border-blue-500"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (IncomeDashboardData.isError) {

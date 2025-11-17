@@ -4,17 +4,11 @@ import { FiEdit } from "react-icons/fi";
 import { IoIosAdd } from "react-icons/io";
 import { AiOutlineDelete } from "react-icons/ai";
 import TransactionModal from "@/components/common/TransactionModal";
+import Loader from "@/components/common/Loader";
 import Chart4 from "@/components/charts/Chart4";
 import { useSession } from "next-auth/react";
 import { useExpense } from "@/hooks/useExpense";
-
-interface Transaction {
-  _id: string;
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-}
+import { Transaction } from "@/types/transaction";
 
 const Expenses = () => {
   const { data: session } = useSession();
@@ -36,11 +30,7 @@ const Expenses = () => {
   };
 
   if (ExpenseDashboardData.isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-3 border-blue-500"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (ExpenseDashboardData.isError) {
@@ -91,7 +81,7 @@ const Expenses = () => {
             </div>
             <div className="rounded-lg p-2 md:p-4 text-gray-600">
               <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
-                {ExpenseDashboardData.data?.ExpensesList.map((trans) => {
+                {ExpenseDashboardData.data?.ExpenseList.map((trans) => {
                   return (
                     <li
                       key={trans._id}
