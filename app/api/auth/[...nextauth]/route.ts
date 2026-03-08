@@ -4,6 +4,15 @@ import pool from "@/lib/mysql";
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
+import { RowDataPacket } from "mysql2";
+
+interface UserRow extends RowDataPacket {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  provider: string;
+}
 
 interface CustomSession extends Session {
   user: {
@@ -22,13 +31,15 @@ const handler = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           throw new Error("Please enter email and password");
         }
-        const [rows]: any = await pool.query(
+
+        const [rows] = await pool.query<UserRow[]>(
           "SELECT * FROM users WHERE email = ?",
-          [credentials.email],
+          [credentials.email]
         );
 
         if (rows.length === 0) {
@@ -43,8 +54,9 @@ const handler = NextAuth({
 
         const isPasswordCorrect = await bcrypt.compare(
           credentials.password,
-          user.password,
+          user.password
         );
+
         if (!isPasswordCorrect) throw new Error("Invalid password");
 
         return {
@@ -55,14 +67,17 @@ const handler = NextAuth({
       },
     }),
   ],
+
   pages: {
     signIn: "/",
     error: "/",
   },
+
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
   },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -70,10 +85,12 @@ const handler = NextAuth({
       }
       return token;
     },
+
     async session({ session, token }: { session: CustomSession; token: JWT }) {
       session.user.id = token.id as string;
       return session;
     },
+
     async redirect({ url, baseUrl }) {
       if (url.startsWith(baseUrl)) {
         if (url === `${baseUrl}/`) {
@@ -84,6 +101,7 @@ const handler = NextAuth({
       return baseUrl;
     },
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 });
 
