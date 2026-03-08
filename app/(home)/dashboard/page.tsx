@@ -84,7 +84,7 @@ export default function Page() {
           <ul className="space-y-4 p-3">
             {dashboardData.recentTransactions.map((trans) => (
               <li
-                key={trans._id}
+                key={trans.id}
                 className="flex justify-between items-center pb-3"
               >
                 <div className="flex items-center gap-4">
@@ -103,7 +103,7 @@ export default function Page() {
                       {trans.category}
                     </h2>
                     <p className="text-xs text-gray-500">
-                      {new Date(trans.date).toLocaleDateString("en-GB", {
+                      {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "long",
                         year: "numeric",
@@ -161,7 +161,7 @@ export default function Page() {
           <ul className="space-y-4 p-3">
             {dashboardData.recentExpenses.map((trans) => (
               <li
-                key={trans._id}
+                key={trans.id}
                 className="flex justify-between items-center pb-3"
               >
                 <div className="flex items-center gap-4">
@@ -173,7 +173,7 @@ export default function Page() {
                       {trans.category}
                     </h2>
                     <p className="text-xs text-gray-500">
-                      {new Date(trans.date).toLocaleDateString("en-GB", {
+                      {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "long",
                         year: "numeric",
@@ -205,7 +205,7 @@ export default function Page() {
           <ul className="space-y-4 p-3">
             {dashboardData.recentIncome.map((trans) => (
               <li
-                key={trans._id}
+                key={trans.id}
                 className="flex justify-between items-center pb-3"
               >
                 <div className="flex items-center gap-4">
@@ -217,7 +217,7 @@ export default function Page() {
                       {trans.category}
                     </h2>
                     <p className="text-xs text-gray-500">
-                      {new Date(trans.date).toLocaleDateString("en-GB", {
+                      {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "long",
                         year: "numeric",

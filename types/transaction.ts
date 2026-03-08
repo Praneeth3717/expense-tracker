@@ -1,11 +1,17 @@
+export type TransactionType = "income" | "expense";
+
 export interface Transaction {
-  _id: string;
-  userId: string;
-  type: "income" | "expense";
+  id: number;
+  userId: number;
+  type: TransactionType;
   category: string;
   amount: number;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  transactionDate: string;
+}
+
+export interface TransactionPayload {
+  category: string;
+  amount: number;
+  transactionDate: string;
+  userId: number;
 }

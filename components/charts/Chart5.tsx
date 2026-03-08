@@ -10,24 +10,20 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-
-type IncomeData = {
-  date: string | Date;
-  amount: number;
-};
+import { DateChartData } from "@/types/dashboard";
 
 interface Chart5Props {
-  IncomeData: IncomeData[];
+  incomeData: DateChartData[];
 }
 
 const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 400;
 
-const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
+const Chart5: React.FC<Chart5Props> = ({ incomeData }) => {
   const formatDate = (date: Date) => {
     return dayjs(date).format("DD MMM");
   };
 
-  if (IncomeData.length === 0) {
+  if (incomeData.length === 0) {
     return (
       <div className="w-full h-60 flex items-center justify-center text-gray-500">
         Add Income data to view Charts.
@@ -38,7 +34,7 @@ const Chart5: React.FC<Chart5Props> = ({ IncomeData }) => {
   return (
     <div className="w-full h-60">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={IncomeData}>
+        <BarChart data={incomeData}>
           <XAxis
             dataKey="date"
             tickFormatter={formatDate}

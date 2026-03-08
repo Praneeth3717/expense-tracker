@@ -12,16 +12,17 @@ import { Transaction } from "@/types/transaction";
 
 const Expenses = () => {
   const { data: session } = useSession();
+  const userId = Number(session?.user?.id);
   const {
     expenseQuery: ExpenseDashboardData,
     deleteExpense,
     addExpense,
     updateExpense,
-  } = useExpense(session?.user?.id);
+  } = useExpense(userId);
 
   const [showAddExpensesModal, setShowAddExpensesModal] = useState(false);
 
-  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+  const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Transaction | null>(null);
 
   const handleEditClick = (trans: Transaction) => {
@@ -69,7 +70,7 @@ const Expenses = () => {
 
             <div className="rounded-lg p-2 md:p-4 text-gray-600 text-center">
               <Chart4
-                ExpenseData={ExpenseDashboardData.data?.ExpenseData || []}
+                expenseData={ExpenseDashboardData.data?.chartData || []}
               />
             </div>
           </div>
@@ -81,11 +82,11 @@ const Expenses = () => {
             </div>
             <div className="rounded-lg p-2 md:p-4 text-gray-600">
               <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
-                {ExpenseDashboardData.data?.ExpenseList.map((trans) => {
+                {ExpenseDashboardData.data?.list.map((trans) => {
                   return (
                     <li
-                      key={trans._id}
-                      onMouseEnter={() => setHoveredItemId(trans._id)}
+                      key={trans.id}
+                      onMouseEnter={() => setHoveredItemId(trans.id)}
                       onMouseLeave={() => setHoveredItemId(null)}
                       className="flex justify-between items-center p-1.5 md:p-2 hover:bg-gray-200 rounded-md"
                     >
@@ -98,7 +99,7 @@ const Expenses = () => {
                             {trans.category}
                           </h2>
                           <p className="text-xs text-gray-500">
-                            {new Date(trans.date).toLocaleDateString("en-GB", {
+                            {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
                               day: "2-digit",
                               month: "long",
                               year: "numeric",
@@ -109,7 +110,7 @@ const Expenses = () => {
                       <div className="flex gap-1.5 md:gap-3 items-center">
                         <div
                           className={`flex gap-1.5 md:gap-2 ${
-                            hoveredItemId === trans._id
+                            hoveredItemId === trans.id
                               ? "opacity-100"
                               : "opacity-0"
                           }`}
@@ -119,7 +120,7 @@ const Expenses = () => {
                             className="text-base text-lg text-gray-400 cursor-pointer"
                           />
                           <AiOutlineDelete
-                            onClick={() => deleteExpense.mutate(trans._id)}
+                            onClick={() => deleteExpense.mutate(trans.id)}
                             className="text-base text-xl text-gray-400 cursor-pointer"
                           />
                         </div>
@@ -149,7 +150,7 @@ const Expenses = () => {
               }}
               editData={editData}
               setEditData={setEditData}
-              User_Id={session?.user?.id}
+              User_Id={userId}
               addExpense={addExpense}
               updateExpense={updateExpense}
             />

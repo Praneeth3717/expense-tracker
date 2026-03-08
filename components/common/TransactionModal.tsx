@@ -2,9 +2,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { UseMutationResult } from "@tanstack/react-query";
-import { Transaction } from "@/types/transaction";
-import { IncomeTransaction, IncomePayload } from "@/types/income";
-import { ExpenseTransaction, ExpensePayload } from "@/types/expense";
+import { Transaction,TransactionPayload } from "@/types/transaction";
 
 interface FormData {
   category: string;
@@ -17,19 +15,19 @@ interface TransactionModalProps {
   onClose: () => void;
   editData: Transaction | null;
   setEditData: (data: Transaction | null) => void;
-  User_Id?: string;
+  User_Id?: number;
 
-  addIncome?: UseMutationResult<IncomeTransaction, Error, IncomePayload>;
+  addIncome?: UseMutationResult<Transaction, Error, TransactionPayload>;
   updateIncome?: UseMutationResult<
-    IncomeTransaction,
+    Transaction,
     Error,
-    { id: string; data: IncomePayload }
+    { id: number; data: TransactionPayload }
   >;
-  addExpense?: UseMutationResult<ExpenseTransaction, Error, ExpensePayload>;
+  addExpense?: UseMutationResult<Transaction, Error, TransactionPayload>;
   updateExpense?: UseMutationResult<
-    ExpenseTransaction,
+    Transaction,
     Error,
-    { id: string; data: ExpensePayload }
+    { id: number; data: TransactionPayload }
   >;
 }
 
@@ -65,10 +63,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
       return;
     }
 
-    const FinalData: IncomePayload = {
+    const FinalData: TransactionPayload = {
       category: formData.category,
       amount: Number(formData.amount),
-      date: formData.date,
+      transactionDate: formData.date,
       userId: User_Id,
     };
 
@@ -76,7 +74,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     if (editData) {
       if (type === "income") {
         updateIncome?.mutate(
-          { id: editData._id, data: FinalData },
+          { id: editData.id, data: FinalData },
           {
             onSuccess: () => {
               console.log("Income updated");
@@ -87,7 +85,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
         );
       } else {
         updateExpense?.mutate(
-          { id: editData._id, data: FinalData },
+          { id: editData.id, data: FinalData },
           {
             onSuccess: () => {
               console.log("Expense updated");
@@ -122,7 +120,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
       setFormData({
         category: editData.category,
         amount: String(editData.amount),
-        date: editData.date.split("T")[0],
+        date: editData.transactionDate.split("T")[0],
       });
     }
   }, [editData]);

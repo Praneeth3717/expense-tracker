@@ -1,12 +1,10 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import pool from "@/lib/mysql";
 import bcrypt from "bcryptjs";
-import User from '../../../../models/userModel';
-import connectDB from '../../../../lib/dbConnect';
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 
-// Define custom session type
 interface CustomSession extends Session {
   user: {
     id: string;
@@ -19,39 +17,47 @@ interface CustomSession extends Session {
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           throw new Error("Please enter email and password");
         }
+        const [rows]: any = await pool.query(
+          "SELECT * FROM users WHERE email = ?",
+          [credentials.email],
+        );
 
-        await connectDB();
+        if (rows.length === 0) {
+          throw new Error("No user found with this email");
+        }
 
-        const user = await User.findOne({ email: credentials.email }).lean();
-        if (!user) throw new Error("No user found with this email");
-        
-        if (user.provider !== 'credentials') {
+        const user = rows[0];
+
+        if (user.provider !== "credentials") {
           throw new Error(`Please sign in with ${user.provider}`);
         }
 
-        const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
+        const isPasswordCorrect = await bcrypt.compare(
+          credentials.password,
+          user.password,
+        );
         if (!isPasswordCorrect) throw new Error("Invalid password");
 
         return {
-          id: user._id.toString(),
+          id: user.id.toString(),
           name: user.name,
           email: user.email,
         };
-      }
-    })
+      },
+    }),
   ],
   pages: {
-    signIn: '/',
-    error: '/',
+    signIn: "/",
+    error: "/",
   },
   session: {
     strategy: "jwt",
@@ -60,14 +66,11 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Safely access the id, handling both formats
-        token.id = user.id || (user._id ? user._id.toString() : '');
-        token.provider = 'credentials';
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }: { session: CustomSession; token: JWT }) {
-      // Ensure we have a properly typed session
       session.user.id = token.id as string;
       return session;
     },
@@ -79,9 +82,9 @@ const handler = NextAuth({
         return url;
       }
       return baseUrl;
-    }
+    },
   },
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };

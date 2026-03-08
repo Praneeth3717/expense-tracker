@@ -10,14 +10,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-type ExpenseData = {
-  category: string;
-  amount: number;
-};
+import { CategoryChartData } from "@/types/dashboard";
 
 interface Chart2Props {
-  expenseData: ExpenseData[];
+  expenseData: CategoryChartData[];
 }
 
 const Chart2: React.FC<Chart2Props> = ({ expenseData }) => {

@@ -8,14 +8,10 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-
-type IncomeData = {
-  category: string;
-  amount: number;
-};
+import { CategoryChartData } from "@/types/dashboard";
 
 interface Chart3Props {
-  incomeData: IncomeData[];
+  incomeData: CategoryChartData[];
 }
 
 const Chart3: React.FC<Chart3Props> = ({ incomeData }) => {

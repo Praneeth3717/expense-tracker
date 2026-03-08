@@ -12,16 +12,17 @@ import { Transaction } from "@/types/transaction";
 
 const Income = () => {
   const { data: session } = useSession();
+  const userId = Number(session?.user?.id);
   const {
     incomeQuery: IncomeDashboardData,
     deleteIncome,
     addIncome,
     updateIncome,
-  } = useIncome(session?.user?.id);
+  } = useIncome(userId);
 
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
 
-  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+  const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Transaction | null>(null);
 
   const handleEditClick = (trans: Transaction) => {
@@ -68,7 +69,7 @@ const Income = () => {
             </div>
 
             <div className="rounded-lg p-2 md:p-4 text-gray-600 text-center">
-              <Chart5 IncomeData={IncomeDashboardData.data?.IncomeData || []} />
+              <Chart5 incomeData={IncomeDashboardData.data?.chartData || []} />
             </div>
           </div>
 
@@ -80,11 +81,11 @@ const Income = () => {
             </div>
             <div className="rounded-lg p-2 md:p-4 text-gray-600">
               <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
-                {IncomeDashboardData.data?.IncomeList.map((trans) => {
+                {IncomeDashboardData.data?.list?.map((trans) => {
                   return (
                     <li
-                      key={trans._id}
-                      onMouseEnter={() => setHoveredItemId(trans._id)}
+                      key={trans.id}
+                      onMouseEnter={() => setHoveredItemId(trans.id)}
                       onMouseLeave={() => setHoveredItemId(null)}
                       className="flex justify-between items-center p-1.5 md:p-2 hover:bg-gray-200 rounded-md"
                     >
@@ -97,7 +98,7 @@ const Income = () => {
                             {trans.category}
                           </h2>
                           <p className="text-xs text-gray-500">
-                            {new Date(trans.date).toLocaleDateString("en-GB", {
+                            {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
                               day: "2-digit",
                               month: "long",
                               year: "numeric",
@@ -108,7 +109,7 @@ const Income = () => {
                       <div className="flex gap-1.5 md:gap-3 items-center">
                         <div
                           className={`flex gap-1.5 md:gap-2 ${
-                            hoveredItemId === trans._id
+                            hoveredItemId === trans.id
                               ? "opacity-100"
                               : "opacity-0"
                           }`}
@@ -118,7 +119,7 @@ const Income = () => {
                             className="text-base text-lg text-gray-400 cursor-pointer"
                           />
                           <AiOutlineDelete
-                            onClick={() => deleteIncome.mutate(trans._id)}
+                            onClick={() => deleteIncome.mutate(trans.id)}
                             className="text-base text-xl text-gray-400 cursor-pointer"
                           />
                         </div>
@@ -148,7 +149,7 @@ const Income = () => {
               }}
               editData={editData}
               setEditData={setEditData}
-              User_Id={session?.user?.id}
+              User_Id={userId}
               addIncome={addIncome}
               updateIncome={updateIncome}
             />

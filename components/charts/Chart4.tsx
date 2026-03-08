@@ -9,24 +9,20 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-type ExpenseData = {
-  date: string | Date;
-  amount: number;
-};
+import { DateChartData } from "@/types/dashboard";
 
 interface Chart3Props {
-  ExpenseData: ExpenseData[];
+  expenseData: DateChartData[];
 }
 
 const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 400;
 
-const Chart4: React.FC<Chart3Props> = ({ ExpenseData }) => {
+const Chart4: React.FC<Chart3Props> = ({ expenseData }) => {
   const formatDate = (date: Date) => {
     return dayjs(date).format("DD MMM");
   };
 
-  if (ExpenseData.length === 0) {
+  if (expenseData.length === 0) {
     return (
       <div className="w-full h-60 flex items-center justify-center text-gray-500">
         Add expense data to view Charts.
@@ -37,7 +33,7 @@ const Chart4: React.FC<Chart3Props> = ({ ExpenseData }) => {
   return (
     <div className="w-full h-60">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={ExpenseData}>
+        <AreaChart data={expenseData}>
           <defs>
             <linearGradient id="colorFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#FF8042" stopOpacity={0.4} />
