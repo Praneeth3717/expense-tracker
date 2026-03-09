@@ -21,13 +21,13 @@ interface TransactionModalProps {
   updateIncome?: UseMutationResult<
     Transaction,
     Error,
-    { id: number; data: TransactionPayload }
+    { id: number; data: Partial<TransactionPayload> }
   >;
   addExpense?: UseMutationResult<Transaction, Error, TransactionPayload>;
   updateExpense?: UseMutationResult<
     Transaction,
     Error,
-    { id: number; data: TransactionPayload }
+    { id: number; data: Partial<TransactionPayload> }
   >;
 }
 

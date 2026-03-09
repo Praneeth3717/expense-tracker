@@ -7,21 +7,21 @@ import TransactionModal from "@/components/common/TransactionModal";
 import Loader from "@/components/common/Loader";
 import Chart5 from "@/components/charts/Chart5";
 import { useSession } from "next-auth/react";
-import { useIncome } from "@/hooks/useIncome";
+import { useTransactions } from "@/hooks/useTransactions";
 import { Transaction } from "@/types/transaction";
 
 const Income = () => {
   const { data: session } = useSession();
   const userId = Number(session?.user?.id);
+
   const {
-    incomeQuery: IncomeDashboardData,
-    deleteIncome,
-    addIncome,
-    updateIncome,
-  } = useIncome(userId);
+    transactionQuery: incomeQuery,
+    addTransaction: addIncome,
+    updateTransaction: updateIncome,
+    deleteTransaction: deleteIncome,
+  } = useTransactions("income", userId);
 
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
-
   const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Transaction | null>(null);
 
@@ -30,11 +30,11 @@ const Income = () => {
     setShowAddIncomeModal(true);
   };
 
-  if (IncomeDashboardData.isLoading) {
+  if (incomeQuery.isLoading) {
     return <Loader />;
   }
 
-  if (IncomeDashboardData.isError) {
+  if (incomeQuery.isError) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-red-500 text-sm">
@@ -44,11 +44,14 @@ const Income = () => {
     );
   }
 
+  const data = incomeQuery.data;
+
   return (
     <>
       <div className="p-2 md:p-4 bg-gray-100 min-h-[calc(100vh-3rem)] overflow-y-auto">
         <div className="space-y-3 md:space-y-4">
-          {/* Income Overview Card */}
+
+          {/* Overview Card */}
           <div className="rounded-lg bg-white p-3 md:p-4 shadow-sm">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
               <div>
@@ -56,9 +59,10 @@ const Income = () => {
                   Income Overview
                 </h1>
                 <p className="text-xs text-gray-500">
-                  Track your earnings over time and analyze your income trends
+                  Track your earnings and analyze income trends
                 </p>
               </div>
+
               <button
                 onClick={() => setShowAddIncomeModal(true)}
                 className="mt-2 md:mt-0 px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full md:w-auto flex items-center justify-center gap-1"
@@ -69,75 +73,89 @@ const Income = () => {
             </div>
 
             <div className="rounded-lg p-2 md:p-4 text-gray-600 text-center">
-              <Chart5 incomeData={IncomeDashboardData.data?.chartData || []} />
+              <Chart5 incomeData={data?.chartData || []} />
             </div>
           </div>
 
+          {/* Income List */}
           <div className="rounded-lg bg-white p-3 md:p-4 shadow-sm">
             <div className="mb-3">
               <h1 className="text-lg md:text-xl text-gray-800">
                 Income Sources
               </h1>
             </div>
-            <div className="rounded-lg p-2 md:p-4 text-gray-600">
-              <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
-                {IncomeDashboardData.data?.list?.map((trans) => {
-                  return (
-                    <li
-                      key={trans.id}
-                      onMouseEnter={() => setHoveredItemId(trans.id)}
-                      onMouseLeave={() => setHoveredItemId(null)}
-                      className="flex justify-between items-center p-1.5 md:p-2 hover:bg-gray-200 rounded-md"
+
+            <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
+
+              {data?.list?.map((trans) => (
+                <li
+                  key={trans.id}
+                  onMouseEnter={() => setHoveredItemId(trans.id)}
+                  onMouseLeave={() => setHoveredItemId(null)}
+                  className="flex justify-between items-center p-1.5 md:p-2 hover:bg-gray-200 rounded-md"
+                >
+
+                  {/* Left */}
+                  <div className="flex items-center gap-1.5 md:gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 text-base md:text-lg bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+                      {trans.category.charAt(0).toUpperCase()}
+                    </div>
+
+                    <div>
+                      <h2 className="text-xs md:text-sm text-gray-800 font-medium">
+                        {trans.category}
+                      </h2>
+
+                      <p className="text-xs text-gray-500">
+                        {new Date(trans.transactionDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right */}
+                  <div className="flex gap-1.5 md:gap-3 items-center">
+
+                    <div
+                      className={`flex gap-1.5 md:gap-2 ${
+                        hoveredItemId === trans.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      }`}
                     >
-                      <div className="flex items-center gap-1.5 md:gap-3">
-                        <div className="w-8 h-8 md:w-10 md:h-10 text-base md:text-lg bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
-                          {trans.category.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <h2 className="text-xs md:text-sm text-gray-800 font-medium">
-                            {trans.category}
-                          </h2>
-                          <p className="text-xs text-gray-500">
-                            {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-1.5 md:gap-3 items-center">
-                        <div
-                          className={`flex gap-1.5 md:gap-2 ${
-                            hoveredItemId === trans.id
-                              ? "opacity-100"
-                              : "opacity-0"
-                          }`}
-                        >
-                          <FiEdit
-                            onClick={() => handleEditClick(trans)}
-                            className="text-base text-lg text-gray-400 cursor-pointer"
-                          />
-                          <AiOutlineDelete
-                            onClick={() => deleteIncome.mutate(trans.id)}
-                            className="text-base text-xl text-gray-400 cursor-pointer"
-                          />
-                        </div>
-                        <div className="font-bold text-xs md:text-sm text-teal-600 min-w-[60px] md:min-w-[70px] text-right">
-                          +₹{trans.amount}
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+                      <FiEdit
+                        onClick={() => handleEditClick(trans)}
+                        className="text-lg text-gray-400 cursor-pointer"
+                      />
+
+                      <AiOutlineDelete
+                        onClick={() => deleteIncome.mutate(trans.id)}
+                        className="text-xl text-gray-400 cursor-pointer"
+                      />
+                    </div>
+
+                    <div className="font-bold text-xs md:text-sm text-teal-600 min-w-[70px] text-right">
+                      +₹{trans.amount}
+                    </div>
+                  </div>
+                </li>
+              ))}
+
+            </ul>
           </div>
         </div>
       </div>
 
+      {/* Modal */}
       {showAddIncomeModal && (
         <div className="w-screen fixed inset-0 z-50 flex items-center justify-center">
+
           <div className="absolute inset-0 bg-black opacity-50 z-40"></div>
 
           <div className="relative z-50 w-full max-w-xs md:max-w-xl px-2 md:px-3">
@@ -154,6 +172,7 @@ const Income = () => {
               updateIncome={updateIncome}
             />
           </div>
+
         </div>
       )}
     </>
