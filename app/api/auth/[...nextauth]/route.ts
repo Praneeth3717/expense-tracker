@@ -1,9 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import pool from "@/lib/mysql";
-import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
+import bcrypt from "bcryptjs";
+import pool from "@/lib/mysql";
 import { RowDataPacket } from "mysql2";
 
 interface UserRow extends RowDataPacket {
@@ -12,6 +11,10 @@ interface UserRow extends RowDataPacket {
   email: string;
   password: string;
   provider: string;
+}
+
+interface CustomJWT extends JWT {
+  id?: string;
 }
 
 interface CustomSession extends Session {
@@ -27,40 +30,43 @@ const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
+
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
+        const email = credentials?.email;
+        const password = credentials?.password;
+
+        if (!email || !password) {
           throw new Error("Please enter email and password");
         }
 
         const [rows] = await pool.query<UserRow[]>(
-          "SELECT * FROM users WHERE email = ?",
-          [credentials.email]
+          "SELECT * FROM users WHERE email = ? LIMIT 1",
+          [email],
         );
-
-        if (rows.length === 0) {
-          throw new Error("No user found with this email");
-        }
 
         const user = rows[0];
 
-        if (user.provider !== "credentials") {
-          throw new Error(`Please sign in with ${user.provider}`);
+        if (!user) {
+          throw new Error("No user found with this email");
         }
 
-        const isPasswordCorrect = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        if (user.provider !== "credentials") {
+          throw new Error(`Please sign in using ${user.provider}`);
+        }
 
-        if (!isPasswordCorrect) throw new Error("Invalid password");
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+          throw new Error("Invalid password");
+        }
 
         return {
-          id: user.id.toString(),
+          id: String(user.id),
           name: user.name,
           email: user.email,
         };
@@ -80,23 +86,29 @@ const handler = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
+      const customToken = token as CustomJWT;
+
       if (user) {
-        token.id = user.id;
+        customToken.id = user.id;
       }
-      return token;
+
+      return customToken;
     },
 
-    async session({ session, token }: { session: CustomSession; token: JWT }) {
-      session.user.id = token.id as string;
-      return session;
+    async session({ session, token }) {
+      const customSession = session as CustomSession;
+      const customToken = token as CustomJWT;
+
+      if (customToken.id) {
+        customSession.user.id = customToken.id;
+      }
+
+      return customSession;
     },
 
     async redirect({ url, baseUrl }) {
       if (url.startsWith(baseUrl)) {
-        if (url === `${baseUrl}/`) {
-          return `${baseUrl}/dashboard`;
-        }
-        return url;
+        return url === `${baseUrl}/` ? `${baseUrl}/dashboard` : url;
       }
       return baseUrl;
     },
