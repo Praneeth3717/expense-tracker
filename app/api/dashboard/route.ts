@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDashboardData } from "../../../controllers/dashboardController";
-import { use } from "react";
 
 export const GET = async (req: NextRequest) => {
   try {
