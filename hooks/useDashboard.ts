@@ -13,7 +13,7 @@ export default function useDashboard(userId?: string) {
   return useQuery<DashboardData>({
     queryKey: ["dashboard", userId],
     queryFn: async () => {
-      const res = await api.get<ApiResponse>(`/transactions?userId=${userId}`);
+      const res = await api.get<ApiResponse>(`/dashboard?userId=${userId}`);
       return res.data.data;
     },
     enabled: !!userId,
