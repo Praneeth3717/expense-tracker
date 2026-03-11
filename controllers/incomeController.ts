@@ -8,9 +8,9 @@ import {
 import { TransactionPayload } from "@/types/transaction";
 
 export const AddIncome = (data: TransactionPayload) =>
-  addTransaction(data.category, data.amount, data.transactionDate, data.userId, "income");
+  addTransaction({ ...data, type: "income" });
 
-export const getIncome = (userId: number) =>
+export const getIncome = (userId: number) => 
   getTransactions(userId, "income");
 
 export const deleteIncome = deleteTransaction;

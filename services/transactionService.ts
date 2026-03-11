@@ -1,5 +1,9 @@
 import pool from "@/lib/mysql";
-import { Transaction, TransactionType, TransactionPayload } from "@/types/transaction";
+import {
+  Transaction,
+  TransactionType,
+  TransactionPayload,
+} from "@/types/transaction";
 import { DateChartData } from "@/types/dashboard";
 import { RowDataPacket, ResultSetHeader } from "mysql2";
 
@@ -7,12 +11,10 @@ interface TransactionRow extends Transaction, RowDataPacket {}
 interface ChartRow extends DateChartData, RowDataPacket {}
 
 export const addTransaction = async (
-  category: string,
-  amount: number,
-  transactionDate: string,
-  userId: number,
-  type: TransactionType,
+  data: TransactionPayload & { type: TransactionType },
 ): Promise<Transaction> => {
+  const { category, amount, transactionDate, userId, type } = data;
+
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO transactions (category, amount, transaction_date, type, user_id)
      VALUES (?, ?, ?, ?, ?)`,
