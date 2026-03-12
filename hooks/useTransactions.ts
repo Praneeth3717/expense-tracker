@@ -2,11 +2,16 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
+import { queryKeys } from "@/lib/queryKeys";
 import {
   IncomeDashboardData,
   ExpenseDashboardData,
 } from "@/types/dashboard";
-import { Transaction, TransactionPayload, TransactionType } from "@/types/transaction";
+import {
+  Transaction,
+  TransactionPayload,
+  TransactionType,
+} from "@/types/transaction";
 
 type DashboardData = IncomeDashboardData | ExpenseDashboardData;
 
@@ -26,7 +31,14 @@ export const useTransactions = (
 ) => {
   const queryClient = useQueryClient();
   const endpoint = `/${type}`;
-  const queryKey = [`${type}-dashboard`, userId];
+  const queryKey = queryKeys.transactions(type, userId);
+
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.dashboard(userId),
+    });
+  };
 
   const transactionQuery = useQuery<DashboardData>({
     queryKey,
@@ -40,6 +52,7 @@ export const useTransactions = (
       return res.data.data;
     },
     enabled: Boolean(userId),
+    staleTime: 5 * 60 * 1000,
   });
 
   const addTransaction = useMutation<Transaction, Error, TransactionPayload>({
@@ -47,18 +60,10 @@ export const useTransactions = (
       const res = await api.post<ApiResponse<Transaction>>(endpoint, payload);
       return res.data.data;
     },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
-      queryClient.invalidateQueries({ queryKey: ["dashboard", userId] });
-    },
+    onSuccess: invalidateAll,
   });
 
-  const updateTransaction = useMutation<
-    Transaction,
-    Error,
-    UpdatePayload
-  >({
+  const updateTransaction = useMutation<Transaction, Error, UpdatePayload>({
     mutationFn: async ({ id, data }) => {
       const res = await api.patch<ApiResponse<Transaction>>(
         `${endpoint}?id=${id}`,
@@ -67,11 +72,7 @@ export const useTransactions = (
 
       return res.data.data;
     },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
-      queryClient.invalidateQueries({ queryKey: ["dashboard", userId] });
-    },
+    onSuccess: invalidateAll,
   });
 
   const deleteTransaction = useMutation<{ id: number }, Error, number>({
@@ -81,11 +82,7 @@ export const useTransactions = (
       );
       return res.data.data;
     },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
-      queryClient.invalidateQueries({ queryKey: ["dashboard", userId] });
-    },
+    onSuccess: invalidateAll,
   });
 
   return {

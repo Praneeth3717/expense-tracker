@@ -51,8 +51,8 @@ export const getDashboardData = async (
 
       pool.query<TotalRow[]>(
         `SELECT
-          SUM(CASE WHEN type='income' THEN amount ELSE 0 END) AS totalIncome,
-          SUM(CASE WHEN type='expense' THEN amount ELSE 0 END) AS totalExpense
+          COALESCE(SUM(CASE WHEN type='income' THEN amount ELSE 0 END), 0) AS totalIncome,
+          COALESCE(SUM(CASE WHEN type='expense' THEN amount ELSE 0 END), 0) AS totalExpense
         FROM transactions
         WHERE user_id = ?`,
         [userId],
