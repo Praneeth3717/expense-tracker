@@ -15,13 +15,14 @@ import Chart3 from "@/components/charts/Chart3";
 
 export default function Page() {
   const { data: session } = useSession();
+  const userId = Number(session?.user?.id);
   const router = useRouter();
 
   const {
     data: dashboardData,
     isLoading,
     isError,
-  } = useDashboard(session?.user.id);
+  } = useDashboard(userId);
 
   if (isLoading) {
     return <Loader />;
