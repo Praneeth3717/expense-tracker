@@ -42,7 +42,7 @@ const Chart4: React.FC<Chart3Props> = ({ expenseData }) => {
           </defs>
 
           <XAxis
-            dataKey="date"
+            dataKey="transactionDate"
             tickFormatter={formatDate}
             tick={{ fontSize: isSmallScreen ? 8 : 12 }}
           />

@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import useDashboard from "@/hooks/useDashboard";
 import Loader from "@/components/common/Loader";
-
+import { formatDate } from "@/utils/formatDate";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { GiMoneyStack } from "react-icons/gi";
 import { BsGraphUpArrow, BsGraphDownArrow } from "react-icons/bs";
@@ -14,17 +14,13 @@ import Chart2 from "@/components/charts/Chart2";
 import Chart3 from "@/components/charts/Chart3";
 
 export default function Page() {
-  const { data: session } = useSession();
-  const userId = Number(session?.user?.id);
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id ? Number(session.user.id) : undefined;
 
-  const {
-    data: dashboardData,
-    isLoading,
-    isError,
-  } = useDashboard(userId);
+  const { data: dashboardData, isLoading, isError } = useDashboard(userId);
 
-  if (isLoading) {
+  if (status === "loading" || isLoading) {
     return <Loader />;
   }
 
@@ -36,9 +32,13 @@ export default function Page() {
     );
   }
 
+  const hasData =
+    dashboardData.totalIncome > 0 ||
+    dashboardData.totalExpense > 0 ||
+    dashboardData.recentTransactions.length > 0;
+
   return (
     <>
-      {/* Top Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
         <div className="bg-white rounded-lg p-3 flex items-center gap-5 shadow-md">
           <GiMoneyStack className="text-5xl p-1 text-gray-600" />
@@ -75,173 +75,183 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Bottom Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Recent Transactions */}
-        <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
-          <div className="flex justify-between items-center p-3">
-            <h1 className="text-lg text-gray-800">Recent Transactions</h1>
+      {!hasData ? (
+        <div className="bg-white rounded-lg shadow-md p-8 flex flex-col items-center justify-center text-center">
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+            No financial data yet
+          </h2>
+
+          <p className="text-sm text-gray-500 mb-4">
+            Start by adding your first income or expense to see charts and
+            insights.
+          </p>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push("/income")}
+              className="px-3 py-1.5 text-sm bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            >
+              Add Income
+            </button>
+
+            <button
+              onClick={() => router.push("/expenses")}
+              className="px-3 py-1.5 text-sm bg-orange-600 text-white rounded-md hover:bg-orange-700"
+            >
+              Add Expense
+            </button>
           </div>
-          <ul className="space-y-4 p-3">
-            {dashboardData.recentTransactions.map((trans) => (
-              <li
-                key={trans.id}
-                className="flex justify-between items-center pb-3"
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`w-12 h-12 text-xl rounded-full flex items-center justify-center font-bold 
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
+            <div className="flex justify-between items-center p-3">
+              <h1 className="text-lg text-gray-800">Recent Transactions</h1>
+            </div>
+            <ul className="space-y-4 p-3">
+              {dashboardData.recentTransactions.map((trans) => (
+                <li
+                  key={trans.id}
+                  className="flex justify-between items-center pb-3"
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-12 h-12 text-xl rounded-full flex items-center justify-center font-bold 
                       ${
                         trans.type === "expense"
                           ? "bg-orange-100 text-orange-500"
                           : "bg-teal-100 text-teal-700"
                       }`}
+                    >
+                      {trans.category.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h2 className="text-gray-800 font-medium text-sm">
+                        {trans.category}
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        {formatDate(trans.transactionDate)}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={`font-medium text-base ${
+                      trans.type === "expense"
+                        ? "text-orange-600"
+                        : "text-teal-600"
+                    }`}
                   >
-                    {trans.category.charAt(0).toUpperCase()}
+                    {trans.type === "expense" ? "-" : "+"}₹{trans.amount}
                   </div>
-                  <div>
-                    <h2 className="text-gray-800 font-medium text-sm">
-                      {trans.category}
-                    </h2>
-                    <p className="text-xs text-gray-500">
-                      {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  className={`font-medium text-base ${
-                    trans.type === "expense"
-                      ? "text-orange-600"
-                      : "text-teal-600"
-                  }`}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-5 h-auto min-h-[400px] md:h-[470px]">
+            <h1 className="text-lg text-gray-800 p-2">Financial Overview</h1>
+            <div className="w-full h-[300px] sm:h-[350px] md:h-[370px] mx-auto">
+              <Chart1
+                TotalBalance={dashboardData.totalBalance}
+                TotalExpenses={dashboardData.totalExpense}
+                TotalIncome={dashboardData.totalIncome}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-5 h-auto min-h-[400px] md:h-[470px] flex flex-col gap-3">
+            <h1 className="text-lg text-gray-800 p-2">Last 60 Days Expenses</h1>
+            <div className="w-full h-[320px] sm:h-[360px] md:h-[380px] mx-auto">
+              <Chart2 expenseData={dashboardData.expenseData} />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
+            <div className="flex justify-between items-center p-3">
+              <h1 className="text-lg text-gray-800">Expenses</h1>
+              <button
+                onClick={() => router.push("./expenses")}
+                className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800 flex items-center justify-center gap-1"
+              >
+                View All
+                <MdOutlineKeyboardArrowRight className="text-lg" />
+              </button>
+            </div>
+
+            <ul className="space-y-4 p-3">
+              {dashboardData.recentExpenses.map((trans) => (
+                <li
+                  key={trans.id}
+                  className="flex justify-between items-center pb-3"
                 >
-                  {trans.type === "expense" ? "-" : "+"}₹{trans.amount}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Financial Overview */}
-        <div className="bg-white rounded-lg shadow-md p-5 h-auto min-h-[400px] md:h-[470px]">
-          <h1 className="text-lg text-gray-800 p-2">Financial Overview</h1>
-          <div className="w-full h-[300px] sm:h-[350px] md:h-[370px] mx-auto">
-            <Chart1
-              TotalBalance={dashboardData.totalBalance}
-              TotalExpenses={dashboardData.totalExpense}
-              TotalIncome={dashboardData.totalIncome}
-            />
-          </div>
-        </div>
-
-        {/* Last 60 Days Expenses */}
-        <div className="bg-white rounded-lg shadow-md p-5 h-auto min-h-[400px] md:h-[470px] flex flex-col gap-3">
-          <h1 className="text-lg text-gray-800 p-2">Last 60 Days Expenses</h1>
-          <div className="w-full h-[320px] sm:h-[360px] md:h-[380px] mx-auto">
-            <Chart2 expenseData={dashboardData.expenseData} />
-          </div>
-        </div>
-
-        {/* Expenses List */}
-        <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
-          <div className="flex justify-between items-center p-3">
-            <h1 className="text-lg text-gray-800">Expenses</h1>
-            <button
-              onClick={() => router.push("./expenses")}
-              className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800 flex items-center justify-center gap-1"
-            >
-              View All
-              <MdOutlineKeyboardArrowRight className="text-lg" />
-            </button>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 text-xl bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold">
+                      {trans.category.charAt(0)}
+                    </div>
+                    <div>
+                      <h2 className="text-gray-800 font-medium text-sm">
+                        {trans.category}
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        {formatDate(trans.transactionDate)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="font-medium text-base text-orange-600">
+                    -₹{trans.amount}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <ul className="space-y-4 p-3">
-            {dashboardData.recentExpenses.map((trans) => (
-              <li
-                key={trans.id}
-                className="flex justify-between items-center pb-3"
+          <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
+            <div className="flex justify-between items-center p-3">
+              <h1 className="text-lg text-gray-800">Income</h1>
+              <button
+                onClick={() => router.push("./income")}
+                className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800 flex items-center justify-center gap-1"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 text-xl bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold">
-                    {trans.category.charAt(0)}
-                  </div>
-                  <div>
-                    <h2 className="text-gray-800 font-medium text-sm">
-                      {trans.category}
-                    </h2>
-                    <p className="text-xs text-gray-500">
-                      {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div className="font-medium text-base text-orange-600">
-                  -₹{trans.amount}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+                View All
+                <MdOutlineKeyboardArrowRight className="text-lg" />
+              </button>
+            </div>
 
-        {/* Income List */}
-        <div className="bg-white rounded-lg shadow-md p-5 h-[470px]">
-          <div className="flex justify-between items-center p-3">
-            <h1 className="text-lg text-gray-800">Income</h1>
-            <button
-              onClick={() => router.push("./income")}
-              className="font-medium text-xs py-1 px-2 rounded-md bg-gray-200 text-gray-800 flex items-center justify-center gap-1"
-            >
-              View All
-              <MdOutlineKeyboardArrowRight className="text-lg" />
-            </button>
+            <ul className="space-y-4 p-3">
+              {dashboardData.recentIncome.map((trans) => (
+                <li
+                  key={trans.id}
+                  className="flex justify-between items-center pb-3"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 text-xl bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold">
+                      {trans.category.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h2 className="text-gray-800 font-medium text-sm">
+                        {trans.category}
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        {formatDate(trans.transactionDate)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="font-medium text-base text-teal-600">
+                    +₹{trans.amount}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <ul className="space-y-4 p-3">
-            {dashboardData.recentIncome.map((trans) => (
-              <li
-                key={trans.id}
-                className="flex justify-between items-center pb-3"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 text-xl bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold">
-                    {trans.category.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <h2 className="text-gray-800 font-medium text-sm">
-                      {trans.category}
-                    </h2>
-                    <p className="text-xs text-gray-500">
-                      {new Date(trans.transactionDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div className="font-medium text-base text-teal-600">
-                  +₹{trans.amount}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Last 60 Days Income */}
-        <div className="bg-white rounded-lg shadow-md p-4 h-auto min-h-[400px] md:h-[470px]">
-          <h1 className="text-lg text-gray-800 p-2">Last 60 Days Income</h1>
-          <div className="w-full h-[300px] sm:h-[350px] md:h-[370px] mx-auto">
-            <Chart3 incomeData={dashboardData.incomeData} />
+          <div className="bg-white rounded-lg shadow-md p-4 h-auto min-h-[400px] md:h-[470px]">
+            <h1 className="text-lg text-gray-800 p-2">Last 60 Days Income</h1>
+            <div className="w-full h-[300px] sm:h-[350px] md:h-[370px] mx-auto">
+              <Chart3 incomeData={dashboardData.incomeData} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
