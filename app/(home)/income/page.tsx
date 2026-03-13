@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoIosAdd } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
@@ -9,18 +9,9 @@ import Chart5 from "@/components/charts/Chart5";
 import { useSession } from "next-auth/react";
 import { useTransactions } from "@/hooks/useTransactions";
 import { Transaction } from "@/types/transaction";
+import { formatDate } from "@/utils/formatDate";
 
 const Income = () => {
-  const { data: session } = useSession();
-  const userId = Number(session?.user?.id);
-
-  const {
-    transactionQuery: incomeQuery,
-    addTransaction: addIncome,
-    updateTransaction: updateIncome,
-    deleteTransaction: deleteIncome,
-  } = useTransactions("income", userId);
-
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Transaction | null>(null);
@@ -30,7 +21,17 @@ const Income = () => {
     setShowAddIncomeModal(true);
   };
 
-  if (incomeQuery.isLoading) {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id ? Number(session.user.id) : undefined;
+
+  const {
+    transactionQuery: incomeQuery,
+    addTransaction: addIncome,
+    updateTransaction: updateIncome,
+    deleteTransaction: deleteIncome,
+  } = useTransactions("income", userId);
+
+  if (status === "loading" || incomeQuery.isLoading) {
     return <Loader />;
   }
 
@@ -44,14 +45,11 @@ const Income = () => {
     );
   }
 
-  const data = incomeQuery.data;
-
   return (
     <>
       <div className="p-2 md:p-4 bg-gray-100 min-h-[calc(100vh-3rem)] overflow-y-auto">
         <div className="space-y-3 md:space-y-4">
-
-          {/* Overview Card */}
+          
           <div className="rounded-lg bg-white p-3 md:p-4 shadow-sm">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
               <div>
@@ -73,89 +71,77 @@ const Income = () => {
             </div>
 
             <div className="rounded-lg p-2 md:p-4 text-gray-600 text-center">
-              <Chart5 incomeData={data?.chartData || []} />
+              <Chart5 incomeData={incomeQuery.data?.chartData ?? []} />
             </div>
           </div>
 
-          {/* Income List */}
           <div className="rounded-lg bg-white p-3 md:p-4 shadow-sm">
             <div className="mb-3">
-              <h1 className="text-lg md:text-xl text-gray-800">
-                Income Sources
-              </h1>
+              <h1 className="text-lg md:text-xl text-gray-800">All Income</h1>
             </div>
 
-            <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
+            {incomeQuery.data?.list?.length === 0 ? (
+              <p className="text-gray-500 text-sm text-center py-10">
+                No income recorded yet. Start by adding your first income!
+              </p>
+            ) : (
+              <ul className="space-y-2 grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-x-6">
+                {incomeQuery.data?.list?.map((trans) => (
+                  <li
+                    key={trans.id}
+                    onMouseEnter={() => setHoveredItemId(trans.id)}
+                    onMouseLeave={() => setHoveredItemId(null)}
+                    className="flex justify-between items-center p-1.5 md:p-2 hover:bg-gray-200 rounded-md"
+                  >
+                    <div className="flex items-center gap-1.5 md:gap-3">
+                      <div className="w-8 h-8 md:w-10 md:h-10 text-base md:text-lg bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+                        {trans.category.charAt(0).toUpperCase()}
+                      </div>
 
-              {data?.list?.map((trans) => (
-                <li
-                  key={trans.id}
-                  onMouseEnter={() => setHoveredItemId(trans.id)}
-                  onMouseLeave={() => setHoveredItemId(null)}
-                  className="flex justify-between items-center p-1.5 md:p-2 hover:bg-gray-200 rounded-md"
-                >
+                      <div>
+                        <h2 className="text-xs md:text-sm text-gray-800 font-medium">
+                          {trans.category}
+                        </h2>
 
-                  {/* Left */}
-                  <div className="flex items-center gap-1.5 md:gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 text-base md:text-lg bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
-                      {trans.category.charAt(0).toUpperCase()}
+                        <p className="text-xs text-gray-500">
+                          {formatDate(trans.transactionDate)}
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
-                      <h2 className="text-xs md:text-sm text-gray-800 font-medium">
-                        {trans.category}
-                      </h2>
+                    <div className="flex gap-1.5 md:gap-3 items-center">
+                      <div
+                        className={`flex gap-1.5 md:gap-2 ${
+                          hoveredItemId === trans.id
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
+                      >
+                        <FiEdit
+                          onClick={() => handleEditClick(trans)}
+                          className="text-lg text-gray-400 cursor-pointer"
+                        />
 
-                      <p className="text-xs text-gray-500">
-                        {new Date(trans.transactionDate).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )}
-                      </p>
+                        <AiOutlineDelete
+                          onClick={() => deleteIncome.mutate(trans.id)}
+                          className="text-xl text-gray-400 cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="font-bold text-xs md:text-sm text-teal-600 min-w-[70px] text-right">
+                        +₹{trans.amount}
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Right */}
-                  <div className="flex gap-1.5 md:gap-3 items-center">
-
-                    <div
-                      className={`flex gap-1.5 md:gap-2 ${
-                        hoveredItemId === trans.id
-                          ? "opacity-100"
-                          : "opacity-0"
-                      }`}
-                    >
-                      <FiEdit
-                        onClick={() => handleEditClick(trans)}
-                        className="text-lg text-gray-400 cursor-pointer"
-                      />
-
-                      <AiOutlineDelete
-                        onClick={() => deleteIncome.mutate(trans.id)}
-                        className="text-xl text-gray-400 cursor-pointer"
-                      />
-                    </div>
-
-                    <div className="font-bold text-xs md:text-sm text-teal-600 min-w-[70px] text-right">
-                      +₹{trans.amount}
-                    </div>
-                  </div>
-                </li>
-              ))}
-
-            </ul>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Modal */}
       {showAddIncomeModal && (
         <div className="w-screen fixed inset-0 z-50 flex items-center justify-center">
-
           <div className="absolute inset-0 bg-black opacity-50 z-40"></div>
 
           <div className="relative z-50 w-full max-w-xs md:max-w-xl px-2 md:px-3">
@@ -172,7 +158,6 @@ const Income = () => {
               updateIncome={updateIncome}
             />
           </div>
-
         </div>
       )}
     </>
