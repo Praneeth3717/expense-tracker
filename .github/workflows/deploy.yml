@@ -3,11 +3,11 @@ name: Expense Tracker CI/CD
 on:
   push:
     branches:
-      - main
+      - master
       - "**"
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Deploy to EC2
@@ -49,7 +49,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/expense-tracker
-            git pull origin main
+            git pull origin master
             npm install
             npm run build
             pm2 restart expense-tracker
