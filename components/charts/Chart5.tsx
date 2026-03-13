@@ -36,7 +36,7 @@ const Chart5: React.FC<Chart5Props> = ({ incomeData }) => {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={incomeData}>
           <XAxis
-            dataKey="date"
+            dataKey="transactionDate"
             tickFormatter={formatDate}
             tick={{ fontSize: isSmallScreen ? 8 : 12 }}
           />

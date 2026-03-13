@@ -3,9 +3,10 @@ import { getDashboardData } from "../../../controllers/dashboardController";
 
 export const GET = async (req: NextRequest) => {
   try {
-    const userId = req.nextUrl.searchParams.get("userId");
+    const userIdParam = req.nextUrl.searchParams.get("userId");
+    const userId = Number(userIdParam);
 
-    if (!userId) {
+    if (!userId || Number.isNaN(userId)) {
       return NextResponse.json(
         { success: false, message: "User ID is required" },
         { status: 400 }
@@ -26,7 +27,6 @@ export const GET = async (req: NextRequest) => {
       {
         success: false,
         message: "Failed to get Dashboard Data",
-        error: error instanceof Error ? error.message : "Unknown Error",
       },
       { status: 500 }
     );

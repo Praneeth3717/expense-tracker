@@ -8,7 +8,7 @@ import {
 import { TransactionPayload } from "@/types/transaction";
 
 export const AddExpense = (data: TransactionPayload) =>
-  addTransaction(data.category, data.amount, data.transactionDate, data.userId, "expense");
+  addTransaction({ ...data, type: "expense" });
 
 export const getExpenses = (userId: number) =>
   getTransactions(userId, "expense");
