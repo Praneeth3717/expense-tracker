@@ -1,6 +1,18 @@
 # TrackMyCash - Personal Finance Tracker
 
-A modern, full-stack expense tracking application built with Next.js, MongoDB, and TypeScript. TrackMyCash helps you manage your personal finances by tracking income and expenses with intuitive visualizations and real-time updates.
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![MySQL](https://img.shields.io/badge/MySQL-Database-orange)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Styling-38B2AC)
+![NextAuth](https://img.shields.io/badge/Auth-NextAuth-green)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+A modern full-stack expense tracking application built with Next.js, MySQL, and TypeScript. TrackMyCash helps users manage personal finances by tracking income and expenses with interactive charts and real-time dashboard insights.
+
+## 🚀 Live Demo
+
+http://13.60.11.92/
 
 ## 📸 Screenshots  
 
@@ -61,7 +73,6 @@ A modern, full-stack expense tracking application built with Next.js, MongoDB, a
 
 - **Backend**
   - Next.js API routes
-  - MongoDB with Mongoose
   - NextAuth.js for authentication
   - RESTful API design
 
@@ -75,8 +86,38 @@ A modern, full-stack expense tracking application built with Next.js, MongoDB, a
 ### Prerequisites
 
 - Node.js 18 or higher
-- MongoDB database
+- MySQL database
 - npm or yarn package manager
+
+## 🗄️ Database Schema
+
+```sql
+CREATE DATABASE expense_tracker;
+USE expense_tracker;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  provider VARCHAR(50) DEFAULT 'credentials',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  type ENUM('income','expense') NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  transaction_date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+```
 
 ### Environment Setup
 
@@ -84,8 +125,12 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 NEXTAUTH_SECRET=your_nextauth_secret
-MONGO_URI=your_mongodb_connection_string
-NEXTAUTH_URL=http://localhost:3000
+DB_HOST=*********
+DB_USER=***********
+DB_PASSWORD=**********
+DB_NAME=**********
+DB_PORT=****
+
 ```
 
 ### Installation
@@ -105,8 +150,6 @@ npm install
 ```bash
 npm run dev
 ```
-
-4. Open [https://expense-tracker-gamma-flame.vercel.app/](https://expense-tracker-gamma-flame.vercel.app/) in your browser
 
 ### Build for Production
 
@@ -133,7 +176,7 @@ npm start
 
 - `POST /api/register` - User registration
 - `POST /api/auth/[...nextauth]` - Authentication endpoints
-- `GET /api/transactions` - Get dashboard data
+- `GET /api/dashboard` - Get dashboard data
 - `POST /api/income` - Add new income
 - `POST /api/expense` - Add new expense
 - `PATCH /api/income` - Update income
@@ -141,10 +184,10 @@ npm start
 - `DELETE /api/income` - Delete income
 - `DELETE /api/expense` - Delete expense
 
-## Contributing
+## ⭐ Highlights
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- Full-stack expense tracker built with **Next.js App Router**
+- **Secure authentication with NextAuth**
+- **MySQL relational database with optimized queries**
+- **Interactive financial charts using Recharts**
+- **Responsive UI built with TailwindCSS**
